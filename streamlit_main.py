@@ -5,7 +5,6 @@ import streamlit as st
 import seaborn as sns
 import plotly.express as px
 from datetime import datetime
-from streamlit_card import card
 import plotly.figure_factory as ff
 import matplotlib.pyplot as plt
 
