@@ -375,7 +375,7 @@ def charts_and_graphs(df):
     # st.pyplot(fig)
 
 def start_streamlit_app(df):
-    overview_metrics_kpi(df)
+    # overview_metrics_kpi(df)
     charts_and_graphs(df)
 
 
