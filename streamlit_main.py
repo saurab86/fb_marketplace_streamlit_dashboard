@@ -27,46 +27,46 @@ st.subheader("Overview Metrics:")
 
 
 ### Cleaning data
-# def clean_price(price_str):
-#     """
-#     Clean price strings by extracting numeric values and handling various price formats.
+def clean_price(price_str):
+    """
+    Clean price strings by extracting numeric values and handling various price formats.
     
-#     Args:
-#         price_str: String containing price information (e.g., "$1,234.56", "1234", "$1k", "1.2K", etc.)
+    Args:
+        price_str: String containing price information (e.g., "$1,234.56", "1234", "$1k", "1.2K", etc.)
         
-#     Returns:
-#         float: Cleaned price value or np.nan if no valid price found
-#     """
-#     if pd.isna(price_str):
-#         return np.nan
+    Returns:
+        float: Cleaned price value or np.nan if no valid price found
+    """
+    if pd.isna(price_str):
+        return np.nan
     
-#     # Convert to string if not already
-#     price_str = str(price_str).strip()
+    # Convert to string if not already
+    price_str = str(price_str).strip()
     
-#     # Remove currency symbols, commas and spaces
-#     price_str = re.sub(r'[$,\s]', '', price_str)
+    # Remove currency symbols, commas and spaces
+    price_str = re.sub(r'[$,\s]', '', price_str)
     
-#     # Handle 'k' or 'K' notation (e.g., "1.5k" or "1.5K" = 1500)
-#     if 'k' in price_str.lower():
-#         try:
-#             # Remove 'k' or 'K' and multiply by 1000
-#             price_str = str(float(price_str.lower().replace('k', '')) * 1000)
-#         except ValueError:
-#             return np.nan
+    # Handle 'k' or 'K' notation (e.g., "1.5k" or "1.5K" = 1500)
+    if 'k' in price_str.lower():
+        try:
+            # Remove 'k' or 'K' and multiply by 1000
+            price_str = str(float(price_str.lower().replace('k', '')) * 1000)
+        except ValueError:
+            return np.nan
     
-#     # Handle ranges (e.g., "100-200", "100 to 200") - take the lower value
-#     if '-' in price_str or ' to ' in price_str:
-#         price_str = re.split(r'[-\s]+to[\s]+|[-]', price_str)[0]
+    # Handle ranges (e.g., "100-200", "100 to 200") - take the lower value
+    if '-' in price_str or ' to ' in price_str:
+        price_str = re.split(r'[-\s]+to[\s]+|[-]', price_str)[0]
     
-#     # Extract numeric values (including decimals)
-#     matches = re.findall(r'\d*\.?\d+', price_str)
-#     if matches:
-#         try:
-#             return float(matches[0])
-#         except ValueError:
-#             return np.nan
+    # Extract numeric values (including decimals)
+    matches = re.findall(r'\d*\.?\d+', price_str)
+    if matches:
+        try:
+            return float(matches[0])
+        except ValueError:
+            return np.nan
             
-#     return np.nan
+    return np.nan
 
 ############# 1. Overview KPI ##########
 def overview_metrics_kpi(df):
