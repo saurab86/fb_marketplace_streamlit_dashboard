@@ -379,5 +379,4 @@ def start_streamlit_app(df):
     charts_and_graphs(df)
 
 
-if __name__ == '__main__':
-    start_streamlit_app(df)
+start_streamlit_app(df)
