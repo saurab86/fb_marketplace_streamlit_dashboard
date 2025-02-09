@@ -12,8 +12,6 @@ df = pd.read_csv("listing.csv")
 
 # listing_data = listing_table.scan().get('Items')
 
-df = pd.DataFrame(listing_data)
-
 st.set_page_config(
     page_title = ' Facebook Marketplace Analysis',
     page_icon = "📊",
