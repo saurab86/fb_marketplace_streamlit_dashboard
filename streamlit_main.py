@@ -26,16 +26,20 @@ st.subheader("Overview Metrics:")
 
 ### Load Data from dynamo DB
 def load_data_from_dynamoDB():
-    # dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
+    dynamodb = boto3.resource(
+        'dynamodb',
+        aws_access_key_id=st.secrets("aws_access_key_id"),
+        aws_secret_access_key=st.secrets("aws_secret_access_key"),
+        region_name="us-east-1"
+    )
 
     # # DynamoDB Tables
-    # location_table = dynamodb.Table("location")
-    # listing_table = dynamodb.Table("listing")
+    location_table = dynamodb.Table("location")
+    listing_table = dynamodb.Table("listing")
 
-    # response = listing_table.scan()
-    # listing_data = response.get("Items", [])
-    # df = pd.DataFrame(listing_data)
-    df = pd.read_csv("listing.csv")
+    response = listing_table.scan()
+    listing_data = response.get("Items", [])
+    df = pd.DataFrame(listing_data)
     df=add_filters_and_search(df)
     return df
 
