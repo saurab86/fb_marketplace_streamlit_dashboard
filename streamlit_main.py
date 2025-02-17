@@ -45,7 +45,7 @@ def add_filters_and_search(df):
     
     # Keyword Search
     search_term = st.sidebar.text_input("Search Listings", "")
-    
+    df['category'] = df['category'].astype(str)
     # Category Filter
     categories = ["All"] + sorted(df["category"].unique().tolist())
     selected_category = st.sidebar.selectbox("Select Category", categories)
