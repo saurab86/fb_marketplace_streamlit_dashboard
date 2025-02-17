@@ -1,2 +1,5 @@
 plotly
 seaborn
+pandas
+boto23
+streamlit
