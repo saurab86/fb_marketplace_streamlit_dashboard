@@ -1,4 +1,5 @@
 import re
+import os
 import boto3
 import numpy as np
 import pandas as pd
@@ -28,8 +29,8 @@ st.subheader("Overview Metrics:")
 def load_data_from_dynamoDB():
     dynamodb = boto3.resource(
         'dynamodb',
-        aws_access_key_id=st.secrets("aws_access_key_id"),
-        aws_secret_access_key=st.secrets("aws_secret_access_key"),
+        aws_access_key_id=os.getenv("aws_access_key_id"),
+        aws_secret_access_key=os.getenv("aws_secret_access_key"),
         region_name="us-east-1"
     )
 
