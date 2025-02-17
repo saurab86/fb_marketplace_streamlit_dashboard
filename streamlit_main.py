@@ -26,15 +26,16 @@ st.subheader("Overview Metrics:")
 
 ### Load Data from dynamo DB
 def load_data_from_dynamoDB():
-    dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
+    # dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
 
-    # DynamoDB Tables
-    location_table = dynamodb.Table("location")
-    listing_table = dynamodb.Table("listing")
+    # # DynamoDB Tables
+    # location_table = dynamodb.Table("location")
+    # listing_table = dynamodb.Table("listing")
 
-    response = listing_table.scan()
-    listing_data = response.get("Items", [])
-    df = pd.DataFrame(listing_data)
+    # response = listing_table.scan()
+    # listing_data = response.get("Items", [])
+    # df = pd.DataFrame(listing_data)
+    df = pd.read_csv("listing.csv")
     df=add_filters_and_search(df)
     return df
 
