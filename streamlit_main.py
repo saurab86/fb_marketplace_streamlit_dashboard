@@ -229,12 +229,11 @@ def charts_and_graphs(df):
     
     # Convert price to numeric, handling any non-numeric values
     df['price'] = df['price'].apply(clean_price)
-    filtered_df = df[df['price'] <= 200000]    
     if viz_type == "Histogram":
-
+        df_filtered = df[df['price'] <= 200000]
         # Creating histogram using plotly
         fig = px.histogram(
-            filtered_df,
+            df_filtered,
             x="price",
             color="category",
             nbins=30,
