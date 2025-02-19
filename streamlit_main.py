@@ -229,13 +229,12 @@ def charts_and_graphs(df):
     
     # Convert price to numeric, handling any non-numeric values
     df['price'] = df['price'].apply(clean_price)
-    # df.to_csv("cleaned_df.csv")
-    
+    filtered_df = df[df['price'] <= 200000]    
     if viz_type == "Histogram":
 
         # Creating histogram using plotly
         fig = px.histogram(
-            df,
+            filtered_df,
             x="price",
             color="category",
             nbins=30,
@@ -251,6 +250,7 @@ def charts_and_graphs(df):
             yaxis_title="Number of Listings",
             legend_title="Category",
             height=500,
+            yaxis_type = "log"
         )
         
     else:  # Box Plot
