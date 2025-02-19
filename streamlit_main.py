@@ -155,8 +155,19 @@ def clean_price(price_str):
 def overview_metrics_kpi(df):
     total_listings = len(df)
     category_counts = df["category"].value_counts()
-    avg_profit_margin = df["profit_margin"].mean()
+    # avg_profit_margin = df["profit_margin"].mean()
     high_scoring_listings = len(df[df["score"] > 80])
+
+    resale_value_median = df['resale_value'].replace(0, pd.NA).median() 
+    df['resale_value'] = df['resale_value'].fillna(resale_value_median)
+    # df['resale_value'] = df['resale_value'].replace(0, resale_value_median) 
+    
+     # Fill missing or 0 values in 'price' with the median of 'price'
+    price_median = df['price'].replace(0, pd.NA).median()  
+    df['price'] = df['price'].fillna(price_median)
+    df['price'] = df['price'].replace(0, price_median)
+
+    avg_profit_margin = ((df['resale_value'].sum()-df['price'].sum())/df['price'].sum()) * 100
 
     df["recency_weight"] = df["recency_weight"].astype(float)
     high_demand_listings = len(df[df["recency_weight"] > df["recency_weight"].quantile(0.75)])
@@ -384,59 +395,59 @@ def charts_and_graphs(df):
 
 
     ##### C. Top 5 Most Profitable Categories #####
-    st.subheader("Average Profit Margin by Category")
+    # st.subheader("Average Profit Margin by Category")
     
-    # Calculate average profit margin by category
-    category_profits = df.groupby('category').agg({
-        'profit_margin': ['mean', 'count', 'std'],
-        'price': 'mean'
-    }).round(2)
+    # # Calculate average profit margin by category
+    # category_profits = df.groupby('category').agg({
+    #     'profit_margin': ['mean', 'count', 'std'],
+    #     'price': 'mean'
+    # }).round(2)
     
-    # Flattening column names
-    category_profits.columns = ['avg_profit', 'listing_count', 'profit_std', 'avg_price']
-    category_profits = category_profits.reset_index()
+    # # Flattening column names
+    # category_profits.columns = ['avg_profit', 'listing_count', 'profit_std', 'avg_price']
+    # category_profits = category_profits.reset_index()
     
-    # Sort by average profit margin in descending order
-    category_profits = category_profits.sort_values('avg_profit', ascending=True)
+    # # Sort by average profit margin in descending order
+    # category_profits = category_profits.sort_values('avg_profit', ascending=True)
     
-    # Creating bar chart
-    fig = px.bar(
-        category_profits,
-        y='category',
-        x='avg_profit',
-        orientation='h',  # Horizontal bars for better category label readability
-        labels={
-            'category': 'Category',
-            'avg_profit': 'Average Profit Margin ($)'
-        },
-        # Add hover data
-        hover_data={
-            'listing_count': True,  
-            'profit_std': ':.2f',   
-            'avg_price': ':.2f'     
-        },
+    # # Creating bar chart
+    # fig = px.bar(
+    #     category_profits,
+    #     y='category',
+    #     x='avg_profit',
+    #     orientation='h',  # Horizontal bars for better category label readability
+    #     labels={
+    #         'category': 'Category',
+    #         'avg_profit': 'Average Profit Margin ($)'
+    #     },
+    #     # Add hover data
+    #     hover_data={
+    #         'listing_count': True,  
+    #         'profit_std': ':.2f',   
+    #         'avg_price': ':.2f'     
+    #     },
 
-        # Color bars by profit margin
-        color='avg_profit',
-        color_continuous_scale='RdYlGn'  # Red to Yellow to Green color scale
-    )
+    #     # Color bars by profit margin
+    #     color='avg_profit',
+    #     color_continuous_scale='RdYlGn'  # Red to Yellow to Green color scale
+    # )
 
-    fig.update_layout(
-        height=600,
-        xaxis_title="Average Profit Margin ($)",
-        yaxis_title="Category",
-        xaxis=dict(
-            showgrid=True,
-            gridwidth=1,
-            gridcolor='LightGray'
-        ),
-        yaxis=dict(
-            showgrid=False
-        )
-    )
+    # fig.update_layout(
+    #     height=600,
+    #     xaxis_title="Average Profit Margin ($)",
+    #     yaxis_title="Category",
+    #     xaxis=dict(
+    #         showgrid=True,
+    #         gridwidth=1,
+    #         gridcolor='LightGray'
+    #     ),
+    #     yaxis=dict(
+    #         showgrid=False
+    #     )
+    # )
 
-    st.plotly_chart(fig, use_container_width=True)
-    st.divider()
+    # st.plotly_chart(fig, use_container_width=True)
+    # st.divider()
     #********************************************************************************************************
     st.subheader("Top 5 Most Profitable Categories")
     category_profits = df.groupby('category').agg({
