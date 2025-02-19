@@ -161,7 +161,7 @@ def overview_metrics_kpi(df):
     resale_value_median = df['resale_value'].replace(0, pd.NA).median() 
     df['resale_value'] = df['resale_value'].fillna(resale_value_median)
     # df['resale_value'] = df['resale_value'].replace(0, resale_value_median) 
-    
+
      # Fill missing or 0 values in 'price' with the median of 'price'
     price_median = df['price'].replace(0, pd.NA).median()  
     df['price'] = df['price'].fillna(price_median)
@@ -618,6 +618,8 @@ def charts_and_graphs(df):
 
 def start_streamlit_app():
     df=load_data_from_dynamoDB()
+    df['price'] = df['price'].apply(clean_price)
+    df['resale_value'] = df['resale_value'].apply(clean_price)
     overview_metrics_kpi(df)
     charts_and_graphs(df)
 
