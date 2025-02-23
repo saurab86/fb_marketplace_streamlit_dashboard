@@ -3,3 +3,4 @@ seaborn
 pandas
 boto3
 streamlit
+streamlit-date-picker
