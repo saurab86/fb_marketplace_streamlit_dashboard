@@ -6,10 +6,10 @@ import pandas as pd
 import streamlit as st
 import seaborn as sns
 import plotly.express as px
-from datetime import datetime
+from datetime import datetime,timedelta
 import matplotlib.pyplot as plt
 import plotly.figure_factory as ff
-
+from streamlit_date_picker import date_range_picker, date_picker, PickerType
 
 st.set_page_config(
     page_title = ' Facebook Marketplace Analysis',
@@ -47,7 +47,34 @@ def load_data_from_dynamoDB():
 
 def add_filters_and_search(df):
     st.sidebar.title("Filters & Search")
-    
+
+    # Date range picker
+    default_start, default_end = datetime(2025,1, 1), datetime.now()
+    refresh_value = timedelta(days=1)
+    refresh_buttons = [{
+                    'button_name': 'Reset',
+                    'refresh_value': refresh_value
+                    
+                  }]
+    with st.sidebar:
+        st.markdown("#### Select Date Range")
+        date_range_string = date_range_picker(
+            picker_type=PickerType.date,
+            start=default_start,
+            end=default_end,
+            refresh_buttons=refresh_buttons,
+            key='date_range_picker'
+        )
+
+    if date_range_string:
+        start_date, end_date = date_range_string
+        start_date = pd.to_datetime(start_date)
+        end_date = pd.to_datetime(end_date)
+
+    else:
+        
+        start_date, end_date = default_start, default_end
+
     # Keyword Search
     search_term = st.sidebar.text_input("Search Listings", "")
     # Category Filter
@@ -75,7 +102,15 @@ def add_filters_and_search(df):
     
     # Apply Filters
     filtered_df = df.copy()
+
+    # **Apply Date Range Filter**
+    if "timestamp" in filtered_df.columns:  # Ensure the column exists
     
+        filtered_df["timestamp"] = pd.to_datetime(filtered_df["timestamp"], errors="coerce")
+        
+        filtered_df = filtered_df[filtered_df["timestamp"].notna()]
+        filtered_df = filtered_df[(filtered_df["timestamp"] >= start_date) & 
+                                  (filtered_df["timestamp"] <= end_date)]
     # Apply keyword search if provided
     if search_term:
         # Search in title and description (assuming these columns exist)
@@ -153,14 +188,30 @@ def clean_price(price_str):
 
 ############# 1. Overview KPI ##########
 def overview_metrics_kpi(df):
+    if df.empty:
+        # Handling the case where the DataFrame is empty (e.g., set defaults or return early)
+        st.warning("No data available after applying filters.")
+        return
+    
     total_listings = len(df)
     category_counts = df["category"].value_counts()
-    # avg_profit_margin = df["profit_margin"].mean()
-    high_scoring_listings = len(df[df["score"] > 80])
 
     resale_value_median = df['resale_value'].replace(0, pd.NA).median() 
     df['resale_value'] = df['resale_value'].fillna(resale_value_median)
-    # df['resale_value'] = df['resale_value'].replace(0, resale_value_median) 
+
+    # Fill missing or 0 values in 'price' with the median of 'price'
+    price_median = df['price'].replace(0, pd.NA).median()  
+    df['price'] = df['price'].fillna(price_median)
+    df['price'] = df['price'].replace(0, price_median)
+
+    # Calculate average profit margin, but avoid division by zero
+    total_resale_value = df['resale_value'].sum()
+    total_price = df['price'].sum()
+
+    if total_price == 0:
+        avg_profit_margin = 0  # or you could set it to None if you prefer
+    else:
+        avg_profit_margin = ((total_resale_value - total_price) / total_price) * 100
 
      # Fill missing or 0 values in 'price' with the median of 'price'
     price_median = df['price'].replace(0, pd.NA).median()  
@@ -168,7 +219,8 @@ def overview_metrics_kpi(df):
     df['price'] = df['price'].replace(0, price_median)
 
     avg_profit_margin = ((df['resale_value'].sum()-df['price'].sum())/df['price'].sum()) * 100
-
+    
+    high_scoring_listings = len(df[df["score"] > 80])
     df["recency_weight"] = df["recency_weight"].astype(float)
     high_demand_listings = len(df[df["recency_weight"] > df["recency_weight"].quantile(0.75)])
 
@@ -217,7 +269,9 @@ def overview_metrics_kpi(df):
 
 ################ 2. Charts and Graphs #############
 def charts_and_graphs(df): 
-    
+    if df.empty:
+        # Handling the case where the DataFrame is empty (e.g., set defaults or return early)
+        st.warning("No data available after applying filters.")
     ##### A. Price Distribution by Category #####
     st.subheader("Price Distribution by Category")
     
