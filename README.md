@@ -25,7 +25,7 @@ This Streamlit application provides an interactive dashboard for analyzing data 
 3. Run the Streamlit app:
 
 4. Access the live dashboard:
-   [https://fbmarketplaceappdashboard-rue4rkc2wythtlweuhwgj7.streamlit.app/](https://fbmarketplaceappdashboard-rue4rkc2wythtlweuhwgj7.streamlit.app/)
+   [https://fbmarketplaceappdashboard-vzercv3bymconyrdqitjip.streamlit.app/](https://fbmarketplaceappdashboard-vzercv3bymconyrdqitjip.streamlit.app/)
    
 ## Data Sources
 
