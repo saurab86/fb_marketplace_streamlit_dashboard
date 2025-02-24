@@ -272,6 +272,7 @@ def charts_and_graphs(df):
     if df.empty:
         # Handling the case where the DataFrame is empty (e.g., set defaults or return early)
         st.warning("No data available after applying filters.")
+        return
     ##### A. Price Distribution by Category #####
     st.subheader("Price Distribution by Category")
     
