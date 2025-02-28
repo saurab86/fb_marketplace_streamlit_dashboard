@@ -52,9 +52,9 @@ class FacebookMarketplaceAnalysis:
         refresh_value = timedelta(days=1)
         refresh_buttons = [{'button_name': 'Reset', 'refresh_value': refresh_value}]
 
-        with st.sidebar:
-            st.markdown("#### Select Date Range")
-            date_range_string = date_range_picker(
+        # with st.sidebar:
+        st.markdown("#### Select Date Range")
+        date_range_string = date_range_picker(
                 picker_type=PickerType.date,
                 start=default_start,
                 end=default_end,
@@ -264,7 +264,10 @@ class FacebookMarketplaceAnalysis:
                 xaxis_title="Category",
                 yaxis_title="Price ($)",
                 height=500,
-                xaxis={'tickangle': 45}
+                xaxis={'tickangle': 45},
+                # xaxis_type = 'log',
+                yaxis_type = 'log'
+
             )
 
         st.plotly_chart(fig, use_container_width=True)
@@ -326,6 +329,7 @@ class FacebookMarketplaceAnalysis:
             overall_avg = self.df['profit_margin'].mean()
             st.metric("Overall Average Margin", f"${overall_avg:.2f}")
 
+        st.markdown("### Average Profit Margin by Category")
         st.plotly_chart(fig, use_container_width=True)
 
         with st.expander("Detailed Category Statistics"):
